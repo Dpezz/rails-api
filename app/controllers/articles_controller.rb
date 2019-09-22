@@ -5,36 +5,36 @@ class ArticlesController < ApplicationController
     end
 
     def create
-        article = Article.new(article_params)
-        if article.save
-            render json: article
+        obj = Article.new(model_params)
+        if obj.save
+            render json: obj
         else
-            render json: { status: 500, code: 500, error: article.errors, exception: article.errors.messages }
+            render json: obj.errors, status: :unprocessable_entity
         end
     end
 
     def show
-        article = Article.find(params[:id])
-        render json: article
+        obj = Article.find(params[:id])
+        render json: obj, :include => :comments
     end
 
     def update
-        article = Article.find(params[:id])
-        if article.update(article_params)
-            render json: article
+        obj = Article.find(params[:id])
+        if obj.update(article_params)
+            render json: obj
         else
-            render json: { status: 500, code: 500, error: article.errors, exception: article.errors.messages }
+            render json: obj.errors, status: :unprocessable_entity
         end
     end
        
     def destroy
-        article = Article.find(params[:id])
-        article.destroy
-        render json: article
+        obj = Article.find(params[:id])
+        obj.destroy
+        render json: obj
     end
 
     private
-        def article_params
-          params.require(:article).permit(:title, :text)
+        def model_params
+          params.require(:obj).permit(:title, :text)
         end
 end
